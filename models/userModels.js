@@ -12,11 +12,17 @@ async function addUser(user){
     return findUserById(id)
 }
 
+function findUserByUsername(username){
+    return db('users').where('username', username).first()
+}
 function findUserById(id){
     return db('users').where('id', id).select('id', 'username').first();
 }
 module.exports = {
     getUsers,
     addUser,
-    findUserById
+    findUserById,
+    findUserByUsername
 }
+
+

@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 5000;
+const userRoutes = require('./routes/userRoutes')
 
 //middleware
 app.use(express.json());
+app.use('/api', userRoutes)
 
 app.get("/", (req, res) =>
   res.send("Welcome to WebAuth with JWT and sessions")

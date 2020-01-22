@@ -2,8 +2,9 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 const User = require("./../models/userModels.js");
+const authorized = require("./../middleware/authorized");
 
-router.get("/users", async (req, res, next) => {
+router.get("/users",authorized(),  async (req, res, next) => {
   res.json({
     users: await User.getUsers()
   });
@@ -40,23 +41,28 @@ router.post("/login", async (req, res, next) => {
         username: username,
         password: password
       });
-    }else{
+    } else {
       const user = await User.findUserByUsername(username);
 
       const validPassword = bcrypt.compareSync(password, user.password);
-      if(!validPassword){
+      if (!validPassword) {
         res.status(404).json({
-          error: 'Incorrect Credentials'
-        })
-      }else{
-        req.session.user = user
+          error: "Incorrect Credentials"
+        });
+      } else {
+        req.session.user = user;
         res.status(200).json({
-          message: 'Login Successful',
+          message: "Login Successful",
           user: user
-        })
+        });
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(404).json({
+      message: "Server Error",
+      error
+    });
+  }
 });
 
 module.exports = router;
